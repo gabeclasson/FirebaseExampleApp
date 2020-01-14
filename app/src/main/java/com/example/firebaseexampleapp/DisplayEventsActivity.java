@@ -45,8 +45,20 @@ public class DisplayEventsActivity extends AppCompatActivity {
         ListView allEventsListView = (ListView) findViewById(R.id.eventList);
         // CustomAdapter is an inner class defined below that details how to adapt this arraylist of data
         CustomAdapter customAdapter = new CustomAdapter();
-        allEventsListView.setAdapter(customAdapter);
 
+        allEventsListView.setAdapter(customAdapter);
+        allEventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Event event = myEvents.get(i);
+
+                // start an intent to load the page to edit this element that has been clicked on
+                Intent intent = new Intent(DisplayEventsActivity.this, EditEventActivity.class);
+                intent.putExtra("event", event);
+                startActivity(intent);
+            }
+        });
     }
 
 
