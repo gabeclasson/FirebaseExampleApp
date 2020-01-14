@@ -34,6 +34,9 @@
         android:layout_marginHorizontal="20dp"
         android:layout_height="40dp"
         android:hint="Date of event to edit"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:onClick="pickTime"
         />
 
 

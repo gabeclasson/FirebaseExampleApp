@@ -2,11 +2,15 @@ package com.example.firebaseexampleapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class EditEventActivity extends AppCompatActivity {
@@ -24,6 +29,11 @@ public class EditEventActivity extends AppCompatActivity {
     private EditText eventNameET;
     private EditText eventDateET;
     private String keyToUpdate;
+    private int year;
+    private int month;
+    private int day;
+
+    private static EditEventActivity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +53,16 @@ public class EditEventActivity extends AppCompatActivity {
 
         eventNameET.setText(eventNameToUpdate);
         eventDateET.setText(eventDateToUpdate);
+
+        year =  event.getYear();
+        month = event.getMonth();
+        day = event.getDay();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentActivity = this;
     }
 
     public void updateEventData(View v) {
@@ -50,23 +70,14 @@ public class EditEventActivity extends AppCompatActivity {
         String newDate = eventDateET.getText().toString();
 
         // error checking to ensure date is of the form 01/17/1979 etc.
-        if (newDate.length() != 10)
-            Toast.makeText(EditEventActivity.this, "Please enter date as MM/DD/YYYY", Toast.LENGTH_SHORT).show();
-        else if (newName.length() == 0)
+        if (newName.length() == 0)
             Toast.makeText(EditEventActivity.this, "Please enter a name for the event", Toast.LENGTH_SHORT).show();
         else
         {
-            // prevents the app from crashing if user doesn't use correct date format
+            // prevents the app from crashing if something goes wrong
             try{
-                int month = Integer.parseInt(newDate.substring(0, 2));
-                int day =  Integer.parseInt(newDate.substring(3, 5));
-                int year =  Integer.parseInt(newDate.substring(6));
-
-                if (month > 0 && month < 13 && day > 0 && day < 32 )
-                    dbHelper.updateEvent(keyToUpdate, newName, newDate, month, day, year);
-                else
-                    Toast.makeText(EditEventActivity.this, "Please enter a valid month/day", Toast.LENGTH_SHORT).show();
-
+                dbHelper.updateEvent(keyToUpdate, newName, newDate, month, day, year);
+                Toast.makeText(EditEventActivity.this, "Updated event.", Toast.LENGTH_SHORT).show();
             }
             catch (Exception e) {
                 Toast.makeText(EditEventActivity.this, "Please enter date as MM/DD/YYYY", Toast.LENGTH_SHORT).show();
@@ -86,36 +97,67 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     public void onRetrieve(View v){
-        dbHelper.getDatabaseReference().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Event> currentEvents = new ArrayList<Event>();
+        Intent intent = new Intent(EditEventActivity.this, DisplayEventsActivity.class);
+        intent.putExtra("events", dbHelper.getEventsArrayList());
+        startActivity(intent);
+    }
 
-                for (DataSnapshot item : dataSnapshot.getChildren())
-                {
-                    Event e = new Event(
-                            item.child("eventName").getValue().toString(),
-                            item.child("eventDate").getValue().toString(),
-                            Integer.valueOf(item.child("year").getValue().toString()),
-                            Integer.valueOf(item.child("month").getValue().toString()),
-                            Integer.valueOf(item.child("day").getValue().toString()),
-                            item.child("key").getValue().toString());
-                    currentEvents.add(e);
-                }
+    /**
+     * Adapted from https://developer.android.com/guide/topics/ui/controls/pickers
+     * Class to pick a date
+     */
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
 
-                // starts intent that will display this new data that has been saved into the arraylist
-                // since we used a single value event the data will not continually update
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
 
-                Intent intent = new Intent(EditEventActivity.this, DisplayEventsActivity.class);
-                intent.putExtra("events", currentEvents);
-                startActivity(intent);
-            }
+        public void onDateSet(DatePicker view, int year, int month, int date){
+            currentActivity.setYear(year);
+            currentActivity.setMonth(month + 1);
+            currentActivity.setDay(date);
+            currentActivity.updateDisplayDate();
+        }
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i("callError", "There has been an Error with database retrieval");
-            }
-        });
+    public void updateDisplayDate(){
+        eventDateET.setText(month + "/" + day + "/" + year);
+    }
 
+    public void pickTime(View v){
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 }
