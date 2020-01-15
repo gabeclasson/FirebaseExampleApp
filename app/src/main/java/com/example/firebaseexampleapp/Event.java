@@ -165,39 +165,6 @@ public class Event implements Parcelable
      * @return
      */
     public String toString() {
-        String str = "";
-        if (month == 1)
-            str += "Jan ";
-        else if (month == 2)
-            str += "Feb ";
-        else if (month == 3)
-            str += "Mar ";
-        else if (month == 4)
-            str += "Apr ";
-        else if (month == 5)
-            str += "May ";
-        else if (month == 6)
-            str += "Jun ";
-        else if (month == 7)
-            str += "Jul ";
-        else if (month == 8)
-            str += "Aug ";
-        else if (month == 9)
-            str += "Sep ";
-        else if (month == 10)
-            str += "Oct ";
-        else if (month == 11)
-            str += "Nov ";
-        else
-            str += "Dec ";
-
-        // Extra space to keep it looking uniform in listview
-        if (day < 10)
-            str += "  ";
-
-        str += day;
-        str += ", " + year + "   " + eventName;
-
-        return str;
+        return year + "-" + month + "-" + day;
     }
 }

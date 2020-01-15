@@ -27,14 +27,66 @@ public class MainActivity extends AppCompatActivity {
     private int dateMonth;
     private int dateDay;
     private int dateYear;
-    FirebaseDatabaseHelper dbHelper; // change to private when it works.
+    public static FirebaseDatabaseHelper dbHelper; // change to private when it works.
+
+    static {
+        dbHelper = new FirebaseDatabaseHelper();
+    }
+
+    /**
+     * Quicksorts the portion of an array with indicies in the range [begin, end) in ascending order
+     * @param a The array to sort
+     * @param begin The first index of the array to sort.
+     * @param end The last index of the array to sort, plus 1.
+     */
+    public static void quickSortA(ArrayList<Event> a, int begin, int end) {
+        if (end - begin <= 1)
+            return;
+        String pivot = a.get(end - 1).toString();
+        int i = begin;
+        for (int x = begin; x < end - 1; x++)
+            if (a.get(x).toString().compareTo(pivot) < 0) {
+                Event temp = a.get(x);
+                a.set(x, a.get(i));
+                a.set(i, temp);
+                i++;
+            }
+        Event temp = a.get(end - 1);
+        a.set(end - 1, a.get(i));
+        a.set(i, temp);
+        quickSortA(a, begin, i);
+        quickSortA(a, i + 1, end);
+    }
+
+    /**
+     * Quicksorts the portion of an array with indicies in the range [begin, end) in descending order
+     * @param a The array to sort
+     * @param begin The first index of the array to sort.
+     * @param end The last index of the array to sort, plus 1.
+     */
+    public static void quickSortD(ArrayList<Event> a, int begin, int end) {
+        if (end - begin <= 1)
+            return;
+        String pivot = a.get(end - 1).toString();
+        int i = begin;
+        for (int x = begin; x < end - 1; x++)
+            if (a.get(x).toString().compareTo(pivot) > 0) {
+                Event temp = a.get(x);
+                a.set(x, a.get(i));
+                a.set(i, temp);
+                i++;
+            }
+        Event temp = a.get(end - 1);
+        a.set(end - 1, a.get(i));
+        a.set(i, temp);
+        quickSortD(a, begin, i);
+        quickSortD(a, i + 1, end);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dbHelper = new FirebaseDatabaseHelper();
         //  Video to learn basic access to CalendarView Data
         //  https://www.youtube.com/watch?v=WNBE_3ZizaA
 
@@ -90,6 +142,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public FirebaseDatabaseHelper getDbHelper() {
+        return dbHelper;
+    }
+
+    public void setDbHelper(FirebaseDatabaseHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
+
     public void onRetrieve(View v){
         dbHelper.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -121,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("callError", "There has been an Error with database retrieval");
             }
         });
+
 
     }
 }

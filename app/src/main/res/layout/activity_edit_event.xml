@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update/Delete an Event"
+        android:text="Modify an event"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
@@ -56,21 +56,5 @@
         android:onClick="deleteEventData"
         android:layout_gravity="center" />
 
-
-    <Button
-        android:id="@+id/showAllButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Show All Events"
-        android:onClick="onRetrieve"
-        android:layout_gravity="center" />
-
-    <Button
-        android:id="@+id/homeButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Home Screen"
-        android:onClick="onHome"
-        android:layout_gravity="center" />
 
 </LinearLayout>

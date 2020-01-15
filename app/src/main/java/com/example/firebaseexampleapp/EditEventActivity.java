@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -85,10 +88,27 @@ public class EditEventActivity extends AppCompatActivity {
         }
     }
 
-
+    // adapted from https://developer.android.com/guide/topics/ui/dialogs#java
     public void deleteEventData(View v) {
-        dbHelper.deleteEvent(keyToUpdate);
-        onHome(v);              // reloads opening screen
+        final View vFinal = v;
+        final Activity thisActivity = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are you sure?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked delete button
+                dbHelper.deleteEvent(keyToUpdate);
+                onHome(vFinal);
+                Toast.makeText(thisActivity, "Event deleted.", Toast.LENGTH_LONG).show();
+                thisActivity.finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.create().show();
     }
 
     public void onHome(View v){
