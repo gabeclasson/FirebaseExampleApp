@@ -43,6 +43,7 @@ public class FirebaseDatabaseHelper {
                             item.child("key").getValue().toString());
                     eventsArrayList.add(e);
                 }
+                EditEventActivity.sort(eventsArrayList);
             }
 
             @Override

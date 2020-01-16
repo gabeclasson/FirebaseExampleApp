@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +37,17 @@ public class EditEventActivity extends AppCompatActivity {
     private int month;
     private int day;
 
-    private static EditEventActivity currentActivity;
+    public static EditEventActivity currentActivity;
+    public static final int LATEST_TO_EARLIEST = 1;
+    public static final int EARLIEST_TO_LATEST = 2;
+    public static int sortingOption = LATEST_TO_EARLIEST;
+
+    public static void sort(ArrayList<Event> a){
+        if (sortingOption == LATEST_TO_EARLIEST)
+            MainActivity.quickSortD(a, 0, a.size());
+        else if (sortingOption == EARLIEST_TO_LATEST)
+            MainActivity.quickSortA(a, 0, a.size());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +164,8 @@ public class EditEventActivity extends AppCompatActivity {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
+
+
 
     public int getYear() {
         return year;

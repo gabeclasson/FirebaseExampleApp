@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,8 @@ public class DisplayEventsActivity extends AppCompatActivity {
         myEvents = MainActivity.dbHelper.getEventsArrayList();
         ListView allEventsListView = (ListView) findViewById(R.id.eventList);
         allEventsListView.setAdapter(new CustomAdapter());
+
+
     }
 
     public void backToHome(View v) {
@@ -75,6 +78,8 @@ public class DisplayEventsActivity extends AppCompatActivity {
     /**Referred to this video regarding CustomAdapter and creating the custom class:
      * https://www.youtube.com/watch?v=FKUlw7mFXRM -->
      **/
+
+
 
     class CustomAdapter extends BaseAdapter {
 
@@ -135,6 +140,7 @@ public class DisplayEventsActivity extends AppCompatActivity {
             // return this view element with the correct data inserted
             return view;
         }
+
 
         /**
          * Helper method used in custom listview class to determine which

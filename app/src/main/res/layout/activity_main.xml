@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Event"
-        android:onClick="addEventButtonPressed"/>
+        android:onClick="addEventButtonPressed" />
 
     <Button
         android:id="@+id/showAllButton"
@@ -47,5 +47,12 @@
         android:layout_height="wrap_content"
         android:text="Show Events"
         android:onClick="onRetrieve"/>
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:onClick="goToSettings"/>
 
 </LinearLayout>

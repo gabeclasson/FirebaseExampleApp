@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
            Event newEvent = new Event(eventName, dateSelected, dateYear, dateMonth, dateDay);
            eventNameET.setText(""); // clears out text
             dbHelper.addEvent(newEvent);
+            Toast.makeText(this, "Event added.", Toast.LENGTH_LONG);
         }
     }
 
@@ -150,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
         this.dbHelper = dbHelper;
     }
 
+    public void goToSettings(View v){
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     public void onRetrieve(View v){
         dbHelper.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -167,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                             item.child("key").getValue().toString());
                     currentEvents.add(e);
                 }
-
+                EditEventActivity.sort(currentEvents);
                 // starts intent that will display this new data that has been saved into the arraylist
                 // since we used a single value event the data will not continually update
 
